@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_defualt_project/providers/calculator_provider.dart';
 import 'package:flutter_defualt_project/ui/app_routes.dart';
 import 'package:flutter_defualt_project/utils/theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'data/local/service/hive_service.dart';
 import 'data/local/storage_repository/storage_repository.dart';
@@ -16,7 +18,17 @@ Future<void> main() async {
   Hive.registerAdapter(DefaultModelAdapter());
   await HiveService.openBox();
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Calculator(),
+          lazy: true,
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

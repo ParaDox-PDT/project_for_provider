@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_defualt_project/providers/calculator_provider.dart';
 import 'package:flutter_defualt_project/ui/home/widgets/list_view_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,21 +16,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController firstController = TextEditingController();
   TextEditingController secondController = TextEditingController();
-  var maskFormatter = MaskTextInputFormatter(
-      mask: '######',
-      filter: {"#": RegExp(r'[0-9]')},
-      type: MaskAutoCompletionType.lazy);
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<Calculator>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Simple Calculator",
-          style: Theme
-              .of(context)
-              .textTheme
-              .headlineMedium,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
         elevation: 10,
         centerTitle: true,
@@ -40,12 +35,22 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
+              padding: EdgeInsets.all(10.r),
               width: double.infinity,
               height: 150.h,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.r),
                   color: Colors.black54,
                   border: Border.all(width: 3.w, color: Colors.black)),
+              child: Center(
+                child: Consumer<Calculator>(
+                  builder: (context, value, Widget? child) => Text(
+                    provider.getAnswer == 0 ? "" : "${provider.getAnswer}",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 20.h,
@@ -57,28 +62,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     textInputAction: TextInputAction.next,
                     controller: firstController,
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [maskFormatter],
+                    inputFormatters: [provider.maskFormatter],
                     decoration: InputDecoration(
                       hintText: "Write first number",
                       disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                     ),
                   ),
@@ -91,28 +101,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     textInputAction: TextInputAction.done,
                     controller: secondController,
                     keyboardType: TextInputType.phone,
-                    inputFormatters: [maskFormatter],
+                    inputFormatters: [provider.maskFormatter],
                     decoration: InputDecoration(
                       hintText: "Write second number",
                       disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.r),
-                        borderSide: const BorderSide(width: 2, color: Colors.black),
+                        borderSide:
+                            const BorderSide(width: 2, color: Colors.black),
                       ),
                     ),
                   ),
@@ -126,6 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 firstController.clear();
                 secondController.clear();
+                provider.clear();
               },
               child: Container(
                 width: 200.w,
@@ -135,15 +151,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.black54,
                     border: Border.all(width: 2.w, color: Colors.black)),
                 child: Center(
-                    child: Text(
-                      "Clear all numbers",
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(color: Colors.red),
-                      overflow: TextOverflow.ellipsis,
-                    )),
+                  child: Text(
+                    "Clear all numbers",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -154,63 +170,91 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.add(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onArithTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.arith(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onDivTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.div(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onGeoTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.geo(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onMinusTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.minus(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onMultiTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.multi(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
               onSumTap: () {
                 if (firstController.text.isEmpty ||
                     secondController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Both fields must be filled"),),);
-                }else{
-
+                    const SnackBar(
+                      content: Text("Both fields must be filled"),
+                    ),
+                  );
+                } else {
+                  provider.sumNum(int.parse(firstController.text),
+                      int.parse(secondController.text));
                 }
               },
             )
