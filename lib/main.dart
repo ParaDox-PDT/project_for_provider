@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_defualt_project/providers/calculator_provider.dart';
+import 'package:flutter_defualt_project/providers/provider.dart';
 import 'package:flutter_defualt_project/ui/app_routes.dart';
 import 'package:flutter_defualt_project/utils/theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,10 @@ Future<void> main() async {
           create: (context) => Calculator(),
           lazy: true,
         ),
+        ChangeNotifierProvider(
+          create: (context) => NumProvider(count: 0,index: 0),
+          lazy: true,
+        ),
       ],
       child: const MyApp(),
     ),
@@ -46,7 +51,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.dark,
-          initialRoute: RouteNames.homeScreen,
+          initialRoute: RouteNames.tabBox,
           onGenerateRoute: AppRoutes.generateRoute,
         );
       },
