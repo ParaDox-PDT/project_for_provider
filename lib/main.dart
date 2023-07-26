@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_defualt_project/providers/calculator_provider.dart';
+import 'package:flutter_defualt_project/data/network/api_provider.dart';
+import 'package:flutter_defualt_project/data/network/api_repository.dart';
+import 'package:flutter_defualt_project/providers/user_provider.dart';
 import 'package:flutter_defualt_project/ui/app_routes.dart';
 import 'package:flutter_defualt_project/utils/theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,9 +24,12 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => Calculator(),
-          lazy: true,
-        ),
+          create: (context) => UserProvider(
+            apiRepository: ApiRepository(
+              apiProvider: ApiProvider(),
+            ),
+          ),
+        )
       ],
       child: const MyApp(),
     ),
